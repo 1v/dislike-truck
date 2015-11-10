@@ -29,9 +29,11 @@ if ((m = re.exec(window.location.href)) !== null) {
   return true;
 }
 
-var CLIENT_ID = '595110168346-46igp17sotrer74ld1rbg4onc5smse60.apps.googleusercontent.com';
-var API_KEY = 'AIzaSyByJQv-QxraMe7iNFEszkcnNk8JfPRTljY';
-var SCOPES = 'https://www.googleapis.com/auth/youtube';
+var CLIENT_ID = '595110168346-46igp17sotrer74ld1rbg4onc5smse60.apps.googleusercontent.com',
+    API_KEY = 'AIzaSyByJQv-QxraMe7iNFEszkcnNk8JfPRTljY',
+    SCOPES = 'https://www.googleapis.com/auth/youtube',
+    PER_PAGE = 10,
+    DELAY_TIME = 1000;
 
 /**
 * Authorize Google Youtube API.
@@ -41,12 +43,25 @@ function authorization() {
  gapi.auth.authorize({
    client_id: CLIENT_ID,
    scope: SCOPES,
-   immediate: false
+   immediate: true
  }, function(authResult) {
       if (authResult && !authResult.error) {
+        // Authorization was successful. Hide authorization prompts and show
+        // content that should be visible after authorization succeeds.
+        $('.pre-auth').hide();
+        $('.post-auth').show();
+
         loadAPIClientInterfaces();
       } else {
-        window.alert("Auth was not successful");
+        // Make the #login-link clickable. Attempt a non-immediate OAuth 2.0
+        // client flow. The current function is called when that flow completes.
+        $('#login-link').click(function() {
+          gapi.auth.authorize({
+            client_id: OAUTH2_CLIENT_ID,
+            scope: OAUTH2_SCOPES,
+            immediate: false
+            }, handleAuthResult);
+        });
       }
     }
  );
@@ -56,6 +71,12 @@ function authorization() {
 * Driver for sample application.
 */
 $(window).load(authorization);
+
+function loadAPIClientInterfaces() {
+  gapi.client.load('youtube', 'v3', function() {
+    // search();
+  });
+}
 
 appendUnloadingButton();
 
@@ -72,27 +93,6 @@ $(document).on("click", ".unload-trucks", function(){
   requestChannelId(channelURI);
 });
 
-function loadAPIClientInterfaces() {
-  gapi.client.load('youtube', 'v3', function() {
-    // search();
-  });
-}
-
-// Search for a specified string.
-function search() {
-  var q = $('#query').val();
-  var request = gapi.client.youtube.search.list({
-    q: "Сергей Симонов",
-    type: "channel",
-    part: 'snippet'
-  });
-
-  request.execute(function(response) {
-    var str = JSON.stringify(response.result);
-    $("body").prepend('<pre>' + str + '</pre>');
-  });
-}
-
 function requestChannelId(user) {
   var request = gapi.client.youtube.channels.list({
     forUsername: user,
@@ -101,8 +101,55 @@ function requestChannelId(user) {
 
   request.execute(function(response) {
       var str = response.result;
-      return str.items[0].id;
+      requestVideos(str.items[0].id);
   });
+}
+
+// requesting videos from channel
+// channelId -
+function requestVideos(channelId, responseObj = null) {
+  var q = {
+    channelId: channelId,
+    maxResults: PER_PAGE,
+    order: "date",
+    type: "video",
+    part: "id"
+  };
+  q.pageToken = (responseObj != null && responseObj.nextPageToken != null) ? responseObj.nextPageToken : null
+  var request = gapi.client.youtube.search.list(q);
+
+  request.execute(function(response) {
+    proceedDislikes(channelId, response);
+  });
+}
+
+function proceedDislikes(channelId, responseObj) {
+
+  for (i = 0; i < responseObj.items.length; i++) {
+    var q = {
+      id: responseObj.items[i].id.videoId,
+      rating: "dislike"
+    };
+
+    proceedSingleDislike(q, i);
+  }
+
+  if (responseObj != null && responseObj.nextPageToken != null) {
+    setTimeout(function() {
+      requestVideos(channelId, responseObj)
+    }, DELAY_TIME * PER_PAGE);
+  }
+}
+
+function proceedSingleDislike(query, delay) {
+
+  setTimeout(function() {
+    var request = gapi.client.youtube.videos.rate(query);
+    request.execute(function(response) {
+      return true;
+    });
+  }, DELAY_TIME * delay);
+
 }
 
 });
