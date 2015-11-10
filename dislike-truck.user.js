@@ -5,12 +5,13 @@
 // @namespace       dislike-truck
 // @description     Обращайтесь - https://github.com/1v/dislike-truck
 // @include         /^https?:\/\/(www\.|)youtube\.com[/]+[\s\S]*$/
-// @version         1.0
+// @version         1.1
 // @author          1v
 // @grant           none
 // @icon            http://img-fotki.yandex.ru/get/17846/203537249.14/0_1356dd_5dfe78f0_orig.png
 // @updateURL       https://github.com/1v/dislike-truck/raw/master/dislike-truck.user.js
 // @downloadURL     https://github.com/1v/dislike-truck/raw/master/dislike-truck.user.js
+// @run-at          document-end
 // ==/UserScript==
 
 $(function() {
