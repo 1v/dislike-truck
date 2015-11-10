@@ -5,7 +5,7 @@
 // @namespace       dislike-truck
 // @description     Обращайтесь - https://github.com/1v/dislike-truck
 // @include         /^https?:\/\/(www\.|)youtube\.com[/]+[\s\S]*$/
-// @version         1.1
+// @version         1.2
 // @author          1v
 // @grant           none
 // @icon            http://img-fotki.yandex.ru/get/17846/203537249.14/0_1356dd_5dfe78f0_orig.png
@@ -32,7 +32,7 @@ if ((m = re.exec(window.location.href)) !== null) {
 var CLIENT_ID = '595110168346-46igp17sotrer74ld1rbg4onc5smse60.apps.googleusercontent.com',
     API_KEY = 'AIzaSyByJQv-QxraMe7iNFEszkcnNk8JfPRTljY',
     SCOPES = 'https://www.googleapis.com/auth/youtube',
-    PER_PAGE = 10,
+    PER_PAGE = 50,
     DELAY_TIME = 1000;
 
 /**
