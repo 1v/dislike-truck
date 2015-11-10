@@ -3,12 +3,14 @@
 // @require         http://code.jquery.com/jquery-latest.min.js
 // @require         https://apis.google.com/js/client.js
 // @namespace       dislike-truck
-// @description     Обращайтесь - http://rutracker.org/forum/profile.php?mode=viewprofile&u=4516607
+// @description     Обращайтесь - https://github.com/1v/dislike-truck
 // @include         /^https?:\/\/(www\.|)youtube\.com[/]+[\s\S]*$/
 // @version         1.0
+// @author          1v
 // @grant           none
 // @icon            http://img-fotki.yandex.ru/get/17846/203537249.14/0_1356dd_5dfe78f0_orig.png
-// @updateURL       https://gist.github.com/1v/5335ecade4e8c423b8c9/raw/f53ad5f6506d8000c00bed56e07236883705564e/dislike-truck.user.js
+// @updateURL       https://github.com/1v/dislike-truck/raw/master/dislike-truck.user.js
+// @downloadURL     https://github.com/1v/dislike-truck/raw/master/dislike-truck.user.js
 // ==/UserScript==
 
 $(function() {
