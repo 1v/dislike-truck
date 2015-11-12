@@ -8,6 +8,9 @@ Greasemonkey скрипт для массового дизлайка видео 
 * [Firefox](https://www.mozilla.org/firefox/new/)
 * [Greasemonkey](https://addons.mozilla.org/firefox/addon/greasemonkey/)
 
+## Установка
+Перейти по ссылке https://github.com/1v/dislike-truck/raw/master/dislike-truck.user.js
+
 ## Применение
 
 Кнопка "Разгрузить фуры" проставляет дизлайки на всех видео канала. Перед разгрузкой нужно выбрать аккаунт. При этом выбранный аккаунт запоминается и не требует повторной авторизации после перезагрузки страницы.
