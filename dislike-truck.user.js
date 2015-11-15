@@ -1,7 +1,8 @@
-﻿// ==UserScript==
+// ==UserScript==
 // @name            Фура с дизлайками
-// @require         http://code.jquery.com/jquery-latest.min.js
+// @require         https://code.jquery.com/jquery-1.11.3.min.js
 // @require         https://apis.google.com/js/client.js
+// @require         https://raw.githubusercontent.com/kimmobrunfeldt/progressbar.js/2af42a3a48979a72a93b989a00bf3e8e75f9f22d/dist/progressbar.js
 // @namespace       dislike-truck
 // @description     Обращайтесь - https://github.com/1v/dislike-truck
 // @include         /^https?:\/\/(www\.|)youtube\.com[/]+[\s\S]*$/
@@ -16,18 +17,58 @@
 
 $(function() {
 
-var re = /youtube\.com\/user\/([^\/]+)/,
-    m;
+var getChannelURI = function(){
+  var re = /youtube\.com\/(user|channel)\/([^\/]+)/,
+      m;
+  if ((m = re.exec(window.location.href)) !== null) {
+      console.log(m);
+      if (m[1] === "user") {
+        this.user = m[2];
+      } else if (m[1] === "channel"){
+        this.id = m[2];
+      }
+      return this;
+  } else {
+    console.log("Not a user page.");
+    return false;
+  }
+};
 
-if ((m = re.exec(window.location.href)) !== null) {
-    if (m.index === re.lastIndex) {
-        re.lastIndex++;
-    }
-    var channelURI = m[1];
-} else {
-  console.log("Not a user page.");
-  return true;
-}
+var Progress = function(){
+  var self = new ProgressBar.Line(".progressContainer", {
+    color: "#CC181E",
+    strokeWidth: 1,
+    text: {
+        value: "0",
+        style: {
+            left: '10%',
+            "margin-top": '10px',
+            display: "block",
+            width: "100px",
+        },
+    },
+    step: function(state, bar) {
+        bar.setText((bar.value() * bar.max).toFixed(0) + " / " + bar.max);
+    },
+    duration: 1000,
+    fill: '#CC181E',
+    trailColor: '#FFB7B9',
+  });
+
+  self.increase = function(){
+    self.animate(++self.current / self.max);
+  };
+
+  self.clear = function(){
+    self.max = 0;
+    self.current = 0;
+  };
+
+  self.clear();
+  self.animate(0);
+
+  return self;
+}, progress = {};
 
 var CLIENT_ID = '595110168346-46igp17sotrer74ld1rbg4onc5smse60.apps.googleusercontent.com',
     API_KEY = 'AIzaSyByJQv-QxraMe7iNFEszkcnNk8JfPRTljY',
@@ -70,10 +111,11 @@ function loadAPIClientInterfaces(callback) {
   });
 }
 
-appendUnloadingButton();
+// appendUnloadingButton();
 
 $(document).on("mouseover", function(){
-  if ($(".unload-trucks").length < 1)
+  console.log(getChannelURI());
+  if ($(".unload-trucks").length < 1 && getChannelURI())
     appendUnloadingButton();
 });
 
@@ -81,7 +123,9 @@ function appendUnloadingButton() {
   var button = $('<span style="float: left; margin-right: 5px;" class="channel-header-subscription-button-container yt-uix-button-subscription-container"><button class="yt-uix-button yt-uix-button-size-default yt-uix-button-subscribe-branded yt-uix-button-has-icon no-icon-markup yt-uix-subscription-button" type="button"><span class="yt-uix-button-content"><span class="subscribe-label">Подписаться</span></span></button></span>');
   $(".channel-header-subscription-button-container")
     .before(button.clone().addClass("register-loader").find(".subscribe-label").text("Регистрация").end())
-    .before(button.clone().addClass("unload-trucks").find(".subscribe-label").text("Разгрузить фуры").end());
+    .before(button.clone().addClass("unload-trucks").find(".subscribe-label").text("Разгрузить фуры").end())
+    .after('<div style="position: absolute; width: 425px; height: 30px; top: 60px; right: 15px"><div class="progressContainer"></div></div>');
+  progress = new Progress();
   // $(".channel-header-subscription-button-container")
   //   .before($("<button>").attr("class", "register-loader").text("Регистрация"))
   //   .before($("<button>").attr("class", "unload-trucks").text("Разгрузить фуры"));
@@ -100,38 +144,42 @@ function appendSimonov(add) {
 
 $(document).on("click", ".register-loader", function(){
   auth(false, loadAPIClientInterfaces(function(){
-    requestChannelId(channelURI);
+    beginDisliking(getChannelURI());
   }));
 });
 
 $(document).on("click", ".unload-trucks", function(){
   authorization(function(){
-    requestChannelId(channelURI);
+    beginDisliking(getChannelURI());
   });
 });
 
-function requestChannelId(user) {
-  var request = gapi.client.youtube.channels.list({
-    forUsername: user,
-    part: "id"
-  });
+function beginDisliking(user) {
+  progress.clear();
+  // if in page url "/channel/"
+  if (user.id) {
+    requestPlaylistId(user.id);
+  } else if (user.user) { // if in page url "/user/" request channel id
+    var request = gapi.client.youtube.channels.list({
+      forUsername: user.user,
+      part: "id"
+    });
 
-  request.execute(function(response) {
-      appendSimonov(true);
-      var str = response.result;
-      requestPlaylistId(str.items[0].id);
-  });
+    request.execute(function(response) {
+        requestPlaylistId(response.items[0].id);
+    });
+  }
 }
 
 function requestPlaylistId(channelId) {
+  appendSimonov(true);
   var request = gapi.client.youtube.channels.list({
     id: channelId,
     part: "contentDetails"
   });
 
   request.execute(function(response) {
-      var str = response.result;
-      requestVideos(str.items[0].contentDetails.relatedPlaylists.uploads);
+      requestVideos(response.items[0].contentDetails.relatedPlaylists.uploads);
   });
 }
 
@@ -144,10 +192,11 @@ function requestVideos(plId, responseObj) {
     fields: "items/snippet/title,items/snippet/resourceId/videoId,nextPageToken,pageInfo",
     part: "snippet"
   };
-  q.pageToken = (responseObj != null && responseObj.nextPageToken != null) ? responseObj.nextPageToken : null
+  q.pageToken = (responseObj != null && responseObj.nextPageToken != null) ? responseObj.nextPageToken : null;
   var request = gapi.client.youtube.playlistItems.list(q);
 
   request.execute(function(response) {
+    progress.max = response.pageInfo.totalResults;
     proceedDislikes(plId, response);
   });
 }
@@ -161,13 +210,14 @@ function proceedDislikes(channelId, responseObj) {
     };
 
     proceedSingleDislike(q, i, function(i){
-                                   if (responseObj.nextPageToken == null &&
-                                       (responseObj.items.length - 1) === i)
-                                     appendSimonov(false);
+                                 if (responseObj.nextPageToken == null &&
+                                     (responseObj.items.length - 1) === i)
+                                   appendSimonov(false);
                                });
   }
 
   if (responseObj != null && responseObj.nextPageToken != null) {
+    // should start all pages at same time, but actually starts in queue
     setTimeout(function() {
       requestVideos(channelId, responseObj)
     }, DELAY_TIME * PER_PAGE);
@@ -181,6 +231,7 @@ function proceedSingleDislike(query, delay, callback) {
     request.execute(function(response) {
       return true;
     });
+    progress.increase();
     typeof callback === 'function' && callback.call(this, delay);
   }, DELAY_TIME * delay, callback);
 
