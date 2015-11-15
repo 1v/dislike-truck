@@ -6,7 +6,7 @@
 // @namespace       dislike-truck
 // @description     Обращайтесь - https://github.com/1v/dislike-truck
 // @include         /^https?:\/\/(www\.|)youtube\.com[/]+[\s\S]*$/
-// @version         1.3
+// @version         1.4
 // @author          1v
 // @grant           none
 // @icon            http://img-fotki.yandex.ru/get/17846/203537249.14/0_1356dd_5dfe78f0_orig.png
@@ -41,10 +41,11 @@ var Progress = function(){
     text: {
         value: "0",
         style: {
-            left: '10%',
-            "margin-top": '10px',
+            left: '50%',
+            top: '10px',
+            margin: '0px',
             display: "block",
-            width: "100px",
+            width: "375px",
         },
     },
     step: function(state, bar) {
@@ -74,7 +75,7 @@ var CLIENT_ID = '595110168346-46igp17sotrer74ld1rbg4onc5smse60.apps.googleuserco
     API_KEY = 'AIzaSyByJQv-QxraMe7iNFEszkcnNk8JfPRTljY',
     SCOPES = 'https://www.googleapis.com/auth/youtube',
     PER_PAGE = 50,
-    DELAY_TIME = 1000;
+    DELAY_TIME = 500;
 
 /**
 * Authorize Google Youtube API.
@@ -124,7 +125,7 @@ function appendUnloadingButton() {
   $(".channel-header-subscription-button-container")
     .before(button.clone().addClass("register-loader").find(".subscribe-label").text("Регистрация").end())
     .before(button.clone().addClass("unload-trucks").find(".subscribe-label").text("Разгрузить фуры").end())
-    .after('<div style="position: absolute; width: 425px; height: 30px; top: 60px; right: 15px"><div class="progressContainer"></div></div>');
+    .after('<div style="position: absolute; width: 375px; height: 30px; top: 60px; right: 15px"><div class="progressContainer"></div></div>');
   progress = new Progress();
   // $(".channel-header-subscription-button-container")
   //   .before($("<button>").attr("class", "register-loader").text("Регистрация"))
@@ -144,7 +145,9 @@ function appendSimonov(add) {
 
 $(document).on("click", ".register-loader", function(){
   auth(false, loadAPIClientInterfaces(function(){
-    beginDisliking(getChannelURI());
+    setTimeout(function() {
+      beginDisliking(getChannelURI());
+    }, 15000);
   }));
 });
 
