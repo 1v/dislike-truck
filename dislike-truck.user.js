@@ -138,8 +138,8 @@ $(function() {
   function appendUnloadingButton() {
     var button = $('<span style="float: left; margin-right: 5px;" class="yt-uix-button-subscription-container"><button class="yt-uix-button yt-uix-button-size-default yt-uix-button-subscribe-branded yt-uix-button-has-icon no-icon-markup yt-uix-subscription-button" type="button"><span class="yt-uix-button-content"><span class="subscribe-label">Подписаться</span></span></button></span>');
     $('.channel-header-subscription-button-container')
-      .before(button.clone().addClass('register-loader').find('.subscribe-label').text('Регистрация').end())
-      .before(button.clone().addClass('unload-trucks').find('.subscribe-label').text('Разгрузить фуры').end())
+      .before(button.clone().addClass('register-loader').find('.subscribe-label').text('Register').end())
+      .before(button.clone().addClass('unload-trucks').find('.subscribe-label').text('Dislike').end())
       .after('<div style="position: absolute; width: 375px; height: 30px; top: 60px; right: 15px"><div class="progressContainer"></div></div>');
     progress = new Progress();
     // $(".channel-header-subscription-button-container")
