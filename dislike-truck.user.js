@@ -6,7 +6,7 @@
 // @namespace       dislike-truck
 // @description     Source: https://github.com/1v/dislike-truck
 // @include         /^https?:\/\/(www\.|)youtube\.com[/]+[\s\S]*$/
-// @version         1.5.2
+// @version         1.5.3
 // @author          1v
 // @grant           none
 // @icon            http://img-fotki.yandex.ru/get/17846/203537249.14/0_1356dd_5dfe78f0_orig.png
@@ -25,7 +25,14 @@ $(function() {
       SCOPES = 'https://www.googleapis.com/auth/youtube',
       PER_PAGE = 50,
       DELAY_TIME = 500,
-      DEBUG_ENABLED = false;
+      DEBUG_ENABLED = false,
+      PROGRESS_BAR_WIDTH = 328,
+      I18N = { en: {} };
+
+  I18N.default = I18N.en;
+
+  I18N.en.register_button_name = 'Register';
+  I18N.en.dislike_button_name = 'Dislike';
 
   var debug = function(msg) {
     if (DEBUG_ENABLED) console.log(msg);
@@ -61,7 +68,7 @@ $(function() {
               margin: '0px',
               padding: '2px 0px 0px 3px',
               display: 'block',
-              width: '375px',
+              width: PROGRESS_BAR_WIDTH + 'px',
             },
         },
       step: function(state, bar) {
@@ -138,13 +145,10 @@ $(function() {
   function appendUnloadingButton() {
     var button = $('<span style="float: left; margin-right: 5px;" class="yt-uix-button-subscription-container"><button class="yt-uix-button yt-uix-button-size-default yt-uix-button-subscribe-branded yt-uix-button-has-icon no-icon-markup yt-uix-subscription-button" type="button"><span class="yt-uix-button-content"><span class="subscribe-label">Подписаться</span></span></button></span>');
     $('.channel-header-subscription-button-container')
-      .before(button.clone().addClass('register-loader').find('.subscribe-label').text('Register').end())
-      .before(button.clone().addClass('unload-trucks').find('.subscribe-label').text('Dislike').end())
-      .after('<div style="position: absolute; width: 375px; height: 30px; top: 60px; right: 15px"><div class="progressContainer"></div></div>');
+      .before(button.clone().addClass('register-loader').find('.subscribe-label').text(I18N.default.register_button_name).end())
+      .before(button.clone().addClass('unload-trucks').find('.subscribe-label').text(I18N.default.dislike_button_name).end())
+      .after('<div style="position: absolute; width: ' + PROGRESS_BAR_WIDTH + 'px; height: 30px; top: 60px; right: 15px"><div class="progressContainer"></div></div>');
     progress = new Progress();
-    // $(".channel-header-subscription-button-container")
-    //   .before($("<button>").attr("class", "register-loader").text("Регистрация"))
-    //   .before($("<button>").attr("class", "unload-trucks").text("Разгрузить фуры"));
   }
 
   function appendSimonov(add) {
