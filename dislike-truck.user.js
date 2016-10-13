@@ -1,12 +1,12 @@
 // ==UserScript==
-// @name            Фура с дизлайками
+// @name            Youtube Mass Dislike Script
 // @require         https://code.jquery.com/jquery-1.11.3.min.js
 // @require         https://apis.google.com/js/client.js?v=1
 // @require         https://raw.githubusercontent.com/kimmobrunfeldt/progressbar.js/2af42a3a48979a72a93b989a00bf3e8e75f9f22d/dist/progressbar.js
 // @namespace       dislike-truck
-// @description     Обращайтесь - https://github.com/1v/dislike-truck
+// @description     Source: https://github.com/1v/dislike-truck
 // @include         /^https?:\/\/(www\.|)youtube\.com[/]+[\s\S]*$/
-// @version         1.5.1
+// @version         1.5.2
 // @author          1v
 // @grant           none
 // @icon            http://img-fotki.yandex.ru/get/17846/203537249.14/0_1356dd_5dfe78f0_orig.png
