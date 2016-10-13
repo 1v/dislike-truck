@@ -2,7 +2,7 @@
 
 Greasemonkey script for mass disliking videos of one channel on youtube.
 
-![](http://img-fotki.yandex.ru/get/9827/203537249.14/0_13633e_a2be4aec_orig.png)
+![](http://img-fotki.yandex.ru/get/61897/203537249.15/0_15bc3d_c0b10cf9_orig.png)
 
 ## Requirements
 * [Firefox](https://www.mozilla.org/firefox/new/)
