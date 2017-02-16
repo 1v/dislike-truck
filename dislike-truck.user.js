@@ -26,7 +26,7 @@ $(function() {
       PER_PAGE = 50,
       DELAY_TIME = 500,
       DEBUG_ENABLED = false,
-      PROGRESS_BAR_WIDTH = 328,
+      PROGRESS_BAR_WIDTH = 305,
       I18N = { en: {} };
 
   I18N.default = I18N.en;
@@ -147,7 +147,7 @@ $(function() {
     $('.channel-header-subscription-button-container')
       .before(button.clone().addClass('register-loader').find('.subscribe-label').text(I18N.default.register_button_name).end())
       .before(button.clone().addClass('unload-trucks').find('.subscribe-label').text(I18N.default.dislike_button_name).end())
-      .after('<div style="position: absolute; width: ' + PROGRESS_BAR_WIDTH + 'px; height: 30px; top: 60px; right: 15px"><div class="progressContainer"></div></div>');
+      .after('<div style="position: absolute; width: ' + PROGRESS_BAR_WIDTH + 'px; height: 30px; top: 95px; right: 15px"><div class="progressContainer"></div></div>');
     progress = new Progress();
   }
 
