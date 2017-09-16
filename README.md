@@ -9,16 +9,16 @@ Greasemonkey script for mass disliking videos of one channel on youtube.
 * [Greasemonkey](https://addons.mozilla.org/firefox/addon/greasemonkey/)
 
 ## Installation
-Click link: https://github.com/1v/dislike-truck/raw/master/dislike-truck.user.js
+After Firefox ang Greasemonkey installed click link: https://github.com/1v/dislike-truck/raw/master/dislike-truck.user.js
 
 ## Usage
 
 Button "Dislike" starts disliking process. Before process starts you need to choose account in popup window. Your account will be remembered.
 
-Button "Register" force account choose (you have 15 seconds to choose).
+Button "Register" force account choose (you have 15 seconds to choose, otherwise you need to click button again).
 
-You need google account to get your account remembered.
+You need google account (not youtube account) to get your account remembered.
 
 ## Bugs
 
-* В консоли появляется много ошибок 'no element found'. Это баг Firefox [bugzilla.mozilla.org](https://bugzilla.mozilla.org/show_bug.cgi?id=884693).
+* In console many errors 'no element found'. It's a Firefox bug [bugzilla.mozilla.org](https://bugzilla.mozilla.org/show_bug.cgi?id=884693).
