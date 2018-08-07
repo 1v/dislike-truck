@@ -6,7 +6,7 @@
 // @namespace       dislike-truck
 // @description     Source: https://github.com/1v/dislike-truck
 // @include         /^https?:\/\/(www\.|)youtube\.com[/]+[\s\S]*$/
-// @version         1.5.4
+// @version         1.6.0
 // @author          1v
 // @grant           none
 // @icon            http://img-fotki.yandex.ru/get/17846/203537249.14/0_1356dd_5dfe78f0_orig.png
@@ -15,7 +15,6 @@
 // @run-at          document-end
 // ==/UserScript==
 
-/* globals $:false, console:false, ProgressBar:false, gapi:false */
 'use strict';
 
 $(function() {
@@ -143,11 +142,11 @@ $(function() {
   });
 
   function appendUnloadingButton() {
-    var button = $('<span style="float: left; margin-right: 5px;" class="yt-uix-button-subscription-container"><button class="yt-uix-button yt-uix-button-size-default yt-uix-button-subscribe-branded yt-uix-button-has-icon no-icon-markup yt-uix-subscription-button" type="button"><span class="yt-uix-button-content"><span class="subscribe-label">Подписаться</span></span></button></span>');
-    $('.channel-header-subscription-button-container')
-      .before(button.clone().addClass('register-loader').find('.subscribe-label').text(I18N.default.register_button_name).end())
-      .before(button.clone().addClass('unload-trucks').find('.subscribe-label').text(I18N.default.dislike_button_name).end())
-      .after('<div style="position: absolute; width: ' + PROGRESS_BAR_WIDTH + 'px; height: 30px; top: 95px; right: 15px"><div class="progressContainer"></div></div>');
+    var button = $('<span style="float: left; margin-right: 5px;"><button type="button"></button></span>');
+    $('#subscribe-button')
+      .before(button.clone().addClass('register-loader').find('button').text(I18N.default.register_button_name).end())
+      .before(button.clone().addClass('unload-trucks').find('button').text(I18N.default.dislike_button_name).end())
+      .after('<div style="position: absolute; width: ' + PROGRESS_BAR_WIDTH + 'px; height: 30px; top: 80px; right: 111px"><div class="progressContainer"></div></div>');
     progress = new Progress();
   }
 
@@ -227,7 +226,6 @@ $(function() {
   }
 
   function proceedDislikes(channelId, responseObj) {
-
     var singleDislikeCallback = function(i) {
       if (responseObj.nextPageToken === undefined &&
          (responseObj.items.length - 1) === i) {
@@ -241,7 +239,7 @@ $(function() {
         rating: 'dislike'
       };
 
-      proceedSingleDislike(q, i, singleDislikeCallback(i));
+      proceedSingleDislike(q, i, singleDislikeCallback);
     }
 
     if (responseObj !== undefined && responseObj.nextPageToken !== undefined) {
@@ -253,7 +251,6 @@ $(function() {
   }
 
   function proceedSingleDislike(query, delay, callback) {
-
     setTimeout(function(callback) {
       var request = gapi.client.youtube.videos.rate(query);
       request.execute(function() {
@@ -264,7 +261,5 @@ $(function() {
         callback.call(this, delay);
       }
     }, DELAY_TIME * delay, callback);
-
   }
-
 });

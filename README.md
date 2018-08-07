@@ -1,15 +1,15 @@
 # Youtube Mass Dislike Script
 
-Greasemonkey script for mass disliking videos of one channel on youtube.
+Tampermonkey script for mass disliking videos of one channel on youtube.
 
 ![](http://img-fotki.yandex.ru/get/61897/203537249.15/0_15bc3d_c0b10cf9_orig.png)
 
 ## Requirements
-* [Firefox](https://www.mozilla.org/firefox/new/)
-* [Greasemonkey](https://addons.mozilla.org/firefox/addon/greasemonkey/)
+* [Firefox](https://www.mozilla.org/firefox/new/) [Tampermonkey](https://addons.mozilla.org/en-US/firefox/addon/tampermonkey/)
+* [Chrome](https://www.google.com/chrome/) [Tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=en)
 
 ## Installation
-After Firefox ang Greasemonkey installed click link: https://github.com/1v/dislike-truck/raw/master/dislike-truck.user.js
+After Tampermonkey installed click link: https://github.com/1v/dislike-truck/raw/master/dislike-truck.user.js
 
 ## Usage
 
