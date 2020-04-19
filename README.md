@@ -1,9 +1,4 @@
 # Youtube Mass Dislike Script
-
-Google added limit for user authentications. I requested increase but they provided giant form to fill in that I can't fill. So script will not work with my credentials.
-
-You can create your own API key and client id and add it here https://github.com/1v/dislike-truck/blob/7943b93e7562f78d030f66e90510b37c726450e1/dislike-truck.user.js#L22-L23.
-
 Tampermonkey script for mass disliking videos of one channel on youtube.
 
 ![](http://img-fotki.yandex.ru/get/61897/203537249.15/0_15bc3d_c0b10cf9_orig.png)
@@ -13,7 +8,8 @@ Tampermonkey script for mass disliking videos of one channel on youtube.
 * [Chrome](https://www.google.com/chrome/) [Tampermonkey](https://chrome.google.com/webstore/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo?hl=en)
 
 ## Installation
-After Tampermonkey installed click link: https://github.com/1v/dislike-truck/raw/master/dislike-truck.user.js
+1. After Tampermonkey installed click link: https://github.com/1v/dislike-truck/raw/master/dislike-truck.user.js.
+2. Create your own [API key and client id](https://console.cloud.google.com/apis/dashboard) and add it here https://github.com/1v/dislike-truck/blob/7943b93e7562f78d030f66e90510b37c726450e1/dislike-truck.user.js#L22-L23.
 
 ## Usage
 
