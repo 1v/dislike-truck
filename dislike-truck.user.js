@@ -6,7 +6,7 @@
 // @namespace       dislike-truck
 // @description     Source: https://github.com/1v/dislike-truck
 // @include         /^https?:\/\/(www\.|)youtube\.com[/]+[\s\S]*$/
-// @version         1.6.0
+// @version         1.7.0
 // @author          1v
 // @grant           none
 // @icon            http://img-fotki.yandex.ru/get/17846/203537249.14/0_1356dd_5dfe78f0_orig.png
@@ -38,21 +38,11 @@ $(function() {
   };
 
   var getChannelURI = function() {
-    var re = /youtube\.com\/(user|channel)\/([^\/]+)/,
+    var re = /youtube\.com\/(user|channel|c)\/([^\/]+)/,
         m;
-    if ((m = re.exec(window.location.href)) !== null) {
-      debug(m);
-      var that = {};
-      if (m[1] === 'user') {
-        that.user = m[2];
-      } else if (m[1] === 'channel') {
-        that.id = m[2];
-      }
-      return that;
-    } else {
-      debug('Not a user page.');
-      return false;
-    }
+    var channelId = $('meta[itemprop=channelId]').attr('content');
+    debug(channelId);
+    return channelId;
   };
 
   var Progress = function() {
@@ -132,8 +122,6 @@ $(function() {
     });
   }
 
-  // appendUnloadingButton();
-
   $(document).on('mouseover', function() {
     if ($('.unload-trucks').length < 1 && getChannelURI()) {
       debug(getChannelURI());
@@ -144,7 +132,8 @@ $(function() {
   function appendUnloadingButton() {
     var button = $('<span style="float: left; margin-right: 5px;"><button type="button"></button></span>');
     $('#subscribe-button')
-      .before(button.clone().addClass('register-loader').find('button').text(I18N.default.register_button_name).end())
+      // disabled because non immediate is not working for some reason
+      //.before(button.clone().addClass('register-loader').find('button').text(I18N.default.register_button_name).end())
       .before(button.clone().addClass('unload-trucks').find('button').text(I18N.default.dislike_button_name).end())
       .after('<div style="position: absolute; width: ' + PROGRESS_BAR_WIDTH + 'px; height: 30px; top: 80px; right: 111px"><div class="progressContainer"></div></div>');
     progress = new Progress();
@@ -180,19 +169,7 @@ $(function() {
 
   function beginDisliking(user) {
     progress.clear();
-    // if in page url "/channel/"
-    if (user.id) {
-      requestPlaylistId(user.id);
-    } else if (user.user) { // if in page url "/user/" request channel id
-      var request = gapi.client.youtube.channels.list({
-        forUsername: user.user,
-        part: 'id'
-      });
-
-      request.execute(function(response) {
-          requestPlaylistId(response.items[0].id);
-        });
-    }
+    requestPlaylistId(user);
   }
 
   function requestPlaylistId(channelId) {
@@ -208,7 +185,6 @@ $(function() {
   }
 
   // requesting videos from channel
-  // channelId -
   function requestVideos(plId, responseObj) {
     var q = {
       playlistId: plId,
@@ -223,6 +199,19 @@ $(function() {
       progress.max = response.pageInfo.totalResults;
       proceedDislikes(plId, response);
     });
+  }
+
+  var timeoutsArray = [];
+
+  function clearTimeouts(message) {
+    debug(timeoutsArray);
+    if (timeoutsArray.length === 0) return;
+    debug(timeoutsArray.length + ' timouts cleared');
+    timeoutsArray.map(function(val){
+      clearTimeout(val);
+    });
+    timeoutsArray = [];
+    alert(message);
   }
 
   function proceedDislikes(channelId, responseObj) {
@@ -244,16 +233,21 @@ $(function() {
 
     if (responseObj !== undefined && responseObj.nextPageToken !== undefined) {
       // should start all pages at same time, but actually starts in queue
-      setTimeout(function() {
+      var listTimeout = setTimeout(function() {
         requestVideos(channelId, responseObj);
       }, DELAY_TIME * PER_PAGE);
+      timeoutsArray.push(listTimeout);
     }
   }
 
   function proceedSingleDislike(query, delay, callback) {
-    setTimeout(function(callback) {
+    var dislikeTimeout = setTimeout(function(callback) {
       var request = gapi.client.youtube.videos.rate(query);
-      request.execute(function() {
+      request.execute(function(response) {
+        debug(response);
+        if (response.code === 403 && response.message.includes('quota')) {
+         clearTimeouts('Quota exceed');
+        }
         return true;
       });
       progress.increase();
@@ -261,5 +255,6 @@ $(function() {
         callback.call(this, delay);
       }
     }, DELAY_TIME * delay, callback);
+    timeoutsArray.push(dislikeTimeout);
   }
 });
