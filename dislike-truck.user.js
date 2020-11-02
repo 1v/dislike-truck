@@ -6,7 +6,7 @@
 // @namespace       dislike-truck
 // @description     Source: https://github.com/1v/dislike-truck
 // @include         /^https?:\/\/(www\.|)youtube\.com[/]+[\s\S]*$/
-// @version         1.7.0
+// @version         1.7.1
 // @author          1v
 // @grant           none
 // @icon            http://img-fotki.yandex.ru/get/17846/203537249.14/0_1356dd_5dfe78f0_orig.png
@@ -42,7 +42,13 @@ $(function() {
         m;
     var channelId = $('meta[itemprop=channelId]').attr('content');
     debug(channelId);
-    return channelId;
+    if (channelId) {
+      return channelId;
+    }
+    var channelId = $('meta[property="og:url"]').attr('content');
+    if (channelId) {
+      return channelId.match(re)[2];
+    }
   };
 
   var Progress = function() {
